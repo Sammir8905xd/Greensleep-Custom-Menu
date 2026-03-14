@@ -39,8 +39,10 @@ jobs:
 
       - name: Setup Geode SDK
         run: |
-          # El comando correcto es 'geode sdk install [PATH]' sin el flag --path
-          # Usamos un nombre de carpeta directo
+          # Inicializamos la configuración de Geode para crear un perfil
+          geode config setup
+          
+          # Instalamos el SDK en una carpeta local
           geode sdk install geode-sdk
           geode sdk set-path geode-sdk
 
