@@ -25,8 +25,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Install Geode CLI
+        run: |
+          # Descargamos el CLI directamente desde GitHub releases
+          $cli_url = "https://github.com/geode-sdk/cli/releases/latest/download/geode-cli-win.zip"
+          curl -L $cli_url -o geode-cli.zip
+          Expand-Archive -Path geode-cli.zip -DestinationPath .
+          # Añadimos al PATH para poder usar 'geode'
+          echo "$(pwd)" >> $env:GITHUB_PATH
+
       - name: Setup Geode SDK
-        uses: geode-sdk/setup-geode@main
+        run: |
+          # Instalamos el SDK usando el CLI que acabamos de bajar
+          geode sdk install --path geode-sdk
+          geode sdk set-path geode-sdk
 
       - name: Build Mod
         uses: geode-sdk/build-geode-mod@main
