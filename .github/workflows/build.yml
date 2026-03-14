@@ -30,7 +30,7 @@ jobs:
           # Instalamos el CLI usando winget
           winget install GeodeSDK.GeodeCLI --accept-package-agreements --accept-source-agreements
           
-          # Intentamos localizar dinámicamente el ejecutable para evitar fallos de PATH
+          # Localizamos el ejecutable para asegurar que el comando 'geode' funcione
           $geodePath = Get-ChildItem -Path "C:\Users\runneradmin\AppData\Local\Microsoft\WinGet\Packages" -Filter "geode.exe" -Recurse | Select-Object -ExpandProperty DirectoryName -First 1
           if ($geodePath) {
               echo "Geode CLI encontrado en: $geodePath"
@@ -39,9 +39,9 @@ jobs:
 
       - name: Setup Geode SDK
         run: |
-          # En lugar de --default (que no existe), enviamos un Enter vacío
-          # Esto inicializa el perfil por defecto sin quedarse esperando
-          echo "" | geode config setup
+          # En lugar de usar el setup interactivo, añadimos un perfil directamente
+          # Esto crea la configuración necesaria sin hacer preguntas
+          geode profile add default
           
           # Instalamos el SDK en una carpeta local
           geode sdk install geode-sdk
