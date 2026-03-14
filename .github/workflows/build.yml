@@ -14,15 +14,7 @@ jobs:
       matrix:
         config:
         - name: Windows
-          os: ubuntu-latest
-          target: Win64
-
-        - name: macOS
-          os: macos-latest
-
-        - name: Android64
-          os: ubuntu-latest
-          target: Android64
+          os: windows-latest
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -31,30 +23,30 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Este paso es VITAL: instala el SDK para que CMake lo encuentre
+      - name: Install Scoop and Geode CLI
+        run: |
+          # Instalamos Scoop
+          Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+          Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+          
+          # Añadimos el bucket de extras y el CLI de Geode
+          scoop bucket add extras
+          scoop install geode-sdk-cli
+          
+          # Añadimos la ruta de Scoop al PATH de GitHub
+          echo "$env:USERPROFILE\scoop\shims" >> $env:GITHUB_PATH
+
       - name: Setup Geode SDK
-        uses: geode-sdk/setup-geode@v3
+        run: |
+          # Inicializamos el perfil de forma no interactiva
+          # Usamos un pipe para saltar cualquier prompt de setup
+          echo "`n" | geode config setup
+          
+          # Instalamos el SDK en una carpeta local
+          geode sdk install geode-sdk
+          geode sdk set-path geode-sdk
 
       - name: Build the mod
-        uses: hiimjasmine00/build-geode-mod@xwin
+        uses: geode-sdk/build-geode-mod@main
         with:
-          build-config: 'Release'
           combine: true
-          target: ${{ matrix.config.target }}
-
-  package:
-    name: Package builds
-    runs-on: ubuntu-latest
-    needs: ['build']
-    if: success()
-
-    steps:
-      - name: Combine Outputs
-        uses: geode-sdk/build-geode-mod/combine@main
-        id: build
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Greensleep-Menu-Build
-          path: ${{ steps.build.outputs.build-output }}
