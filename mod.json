@@ -1,0 +1,25 @@
+{
+	"geode": "5.3.0",
+	"gd": {
+		"win": "2.2081"
+	},
+	"id": "orangydev.dynamic_main_menu",
+	"name": "Greensleep Custom Menu Pro",
+	"version": "2.0.0",
+	"developer": "OranGy",
+	"description": "Mod dinámico para añadir niveles de The Greensleep Crew al menú principal.",
+	"settings": {
+		"custom-level-ids": {
+			"name": "IDs de Niveles",
+			"description": "Lista de IDs separados por comas (ej: 1234, 5678). El 1ro reemplaza a Stereo Madness.",
+			"type": "string",
+			"default": ""
+		},
+		"orange-mode": {
+			"name": "Modo OranGy",
+			"description": "Activa el fondo naranja en el menú de selección.",
+			"type": "bool",
+			"default": true
+		}
+	}
+}
