@@ -39,8 +39,8 @@ jobs:
 
       - name: Setup Geode SDK
         run: |
-          # Inicializamos la configuración de Geode para crear un perfil
-          geode config setup
+          # Usamos --default para que no pida confirmación manual (evita el error Eof)
+          geode config setup --default
           
           # Instalamos el SDK en una carpeta local
           geode sdk install geode-sdk
