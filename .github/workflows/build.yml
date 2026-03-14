@@ -31,10 +31,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # Este paso es VITAL: instala el SDK para que CMake lo encuentre
+      - name: Setup Geode SDK
+        uses: geode-sdk/setup-geode@v3
+
       - name: Build the mod
         uses: hiimjasmine00/build-geode-mod@xwin
         with:
-          # Usamos Release para que el mod pese poco y corra rápido
           build-config: 'Release'
           combine: true
           target: ${{ matrix.config.target }}
