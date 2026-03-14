@@ -39,9 +39,11 @@ jobs:
 
       - name: Setup Geode SDK
         run: |
-          # En lugar de usar el setup interactivo, añadimos un perfil directamente
-          # Esto crea la configuración necesaria sin hacer preguntas
-          geode profile add default
+          # Creamos el directorio de configuración manualmente para que el CLI no pregunte nada
+          mkdir -p $env:LOCALAPPDATA\Geode
+          
+          # Usamos un comando que no requiere interacción para crear el perfil inicial
+          geode profile add default --dont-install
           
           # Instalamos el SDK en una carpeta local
           geode sdk install geode-sdk
