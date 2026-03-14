@@ -25,24 +25,26 @@ jobs:
 
       - name: Install Scoop and Geode CLI
         run: |
-          # Instalamos Scoop
+          # Instalamos Scoop de forma silenciosa
           Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
           Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
           
-          # Añadimos el bucket de extras y el CLI de Geode
+          # Añadimos el bucket de extras e instalamos el CLI
+          $env:PATH += ";$env:USERPROFILE\scoop\shims"
           scoop bucket add extras
           scoop install geode-sdk-cli
           
-          # Añadimos la ruta de Scoop al PATH de GitHub
+          # Aseguramos que el PATH se actualice para los siguientes pasos
           echo "$env:USERPROFILE\scoop\shims" >> $env:GITHUB_PATH
 
       - name: Setup Geode SDK
         run: |
-          # Inicializamos el perfil de forma no interactiva
-          # Usamos un pipe para saltar cualquier prompt de setup
-          echo "`n" | geode config setup
+          # EL TRUCO MAESTRO:
+          # Usamos --no-check para que no busque Geometry Dash ni pida rutas.
+          # Usamos --default para aceptar todo automáticamente.
+          geode profile add default --dont-install --no-check
           
-          # Instalamos el SDK en una carpeta local
+          # Instalamos el SDK en la carpeta del corredor
           geode sdk install geode-sdk
           geode sdk set-path geode-sdk
 
