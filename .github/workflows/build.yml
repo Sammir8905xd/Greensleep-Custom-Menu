@@ -29,14 +29,19 @@ jobs:
         run: |
           # Instalamos el CLI usando winget
           winget install GeodeSDK.GeodeCLI --accept-package-agreements --accept-source-agreements
-          # Añadimos la ruta por defecto del CLI al PATH de GitHub
-          echo "C:\Users\runneradmin\AppData\Local\Microsoft\WinGet\Packages\GeodeSDK.GeodeCLI_Microsoft.Winget.Source_8wekyb3d8bbwe" >> $env:GITHUB_PATH
-          # Nota: Si la ruta cambia, winget suele encargarse, pero en CI a veces hay que forzar el refresco del PATH
+          
+          # Intentamos localizar dinámicamente el ejecutable para evitar fallos de PATH
+          $geodePath = Get-ChildItem -Path "C:\Users\runneradmin\AppData\Local\Microsoft\WinGet\Packages" -Filter "geode.exe" -Recurse | Select-Object -ExpandProperty DirectoryName -First 1
+          if ($geodePath) {
+              echo "Geode CLI encontrado en: $geodePath"
+              echo "$geodePath" >> $env:GITHUB_PATH
+          }
 
       - name: Setup Geode SDK
         run: |
-          # Instalamos el SDK usando el CLI
-          geode sdk install --path geode-sdk
+          # El comando correcto es 'geode sdk install [PATH]' sin el flag --path
+          # Usamos un nombre de carpeta directo
+          geode sdk install geode-sdk
           geode sdk set-path geode-sdk
 
       - name: Build Mod
