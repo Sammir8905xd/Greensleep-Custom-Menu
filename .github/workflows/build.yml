@@ -39,12 +39,13 @@ jobs:
 
       - name: Setup Geode SDK
         run: |
-          # EL TRUCO MAESTRO:
-          # Usamos --no-check para que no busque Geometry Dash ni pida rutas.
-          # Usamos --default para aceptar todo automáticamente.
-          geode profile add default --dont-install --no-check
+          # SOLUCIÓN DEFINITIVA:
+          # El comando pide: geode profile add <NAME> <LOCATION>
+          # Le damos 'default' como nombre y el Desktop como ruta inventada del juego
+          # Usamos --no-check para que no se queje de que no hay .exe ahí
+          geode profile add default "$env:USERPROFILE\Desktop" --no-check
           
-          # Instalamos el SDK en la carpeta del corredor
+          # Ahora sí, instalamos el SDK en la carpeta del corredor
           geode sdk install geode-sdk
           geode sdk set-path geode-sdk
 
